@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuarios Plex</title>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTable en tu tabla
+            $('#usuariosTable').DataTable();
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Elimina el margen predeterminado del body */
+            overflow: hidden; /* Evita el desplazamiento */
+        }
+        h1 {
+            background: linear-gradient(to right, #ff8c00, #ff4d00);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 0;
+            font-family: 'Roboto', sans-serif;
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+        .table-container {
+            margin: 20px auto; /* Ajusta el margen y auto para centrar horizontalmente */
+            width: 80%; /* Establece el ancho de la tabla */
+            max-height: 700px; /* Ajusta la altura máxima según tus necesidades */
+            overflow-y: auto; /* Agrega un desplazamiento vertical si es necesario */
+        }
+        table {
+            margin-bottom: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            text-align: center; 
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            text-align: center; 
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .actions form {
+            margin: 5px;
+        }
+        button {
+            background-color: #ffffff;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .actions img {
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+        }
+        .filtro-container {
+            margin-top: 20px;
+        }
+        .content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, rgba(74, 74, 74, 0.4), rgba(255, 255, 255, 0.4));
+        }
+        
+        label {
+            font-size: 16px;
+            margin-right: 10px;
+            color: #333;
+        }
+        #filtro_email {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        #flash-messages {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 300px;
+        text-align: center;
+        }
+
+        .flash-message {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        position: relative;
+        }
+
+        .error {
+        background-color: #dc3545;
+        }
+
+        .flash-message .close {
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        color: #fff;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                setTimeout(function () {
+                flashMessages.style.opacity = '0';
+                }, 5000); // Oculta después de 5 segundos
+            }
+        });
+
+        function filtrarPorEmail() {
+            var input, filtro, tabla, filas, celda, i, valorCelda;
+            input = document.getElementById("filtro_email");
+            filtro = input.value.toUpperCase();
+            tabla = document.querySelector("table");
+            filas = tabla.getElementsByTagName("tr");
+
+            // Itera sobre todas las filas de la tabla
+            for (i = 0; i < filas.length; i++) {
+                celda = filas[i].getElementsByTagName("td")[0]; // La primera celda contiene el email
+                if (celda) {
+                    valorCelda = celda.textContent || celda.innerText;
+                    // Compara el valor de la celda con el filtro
+                    if (valorCelda.toUpperCase().indexOf(filtro) > -1) {
+                        filas[i].style.display = ""; // Muestra la fila si coincide con el filtro
+                    } else {
+                        filas[i].style.display = "none"; // Oculta la fila si no coincide con el filtro
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var usuarios = document.querySelectorAll('.usuario-fila');
+            
+
+            usuarios.forEach(function (usuario) {
+                var expiracionStr = usuario.querySelector('.expiracion').textContent;
+                // Divide la cadena para obtener día, mes y año
+                var partesFecha = expiracionStr.split('/');
+                var dia = parseInt(partesFecha[0], 10); // Convertir a entero (base 10)
+                var mes = parseInt(partesFecha[1], 10);
+                var anio = parseInt(partesFecha[2], 10);
+
+                // Crea el objeto Date con el formato correcto
+                var expiracion = new Date(anio, mes - 1, dia,23, 59, 59);
+               // Obtener la fecha actual sin la hora
+                var fechaActual = new Date();
+                fechaActual.setHours(0, 0, 0, 0);
+                expiracion.setHours(0, 0, 0, 0);
+
+                // Obtener el valor de codigoColor
+                var codigoColor = usuario.dataset.codigocolor;
+
+                // Fecha expirada (que conlleva a eliminacion de amigo)
+                if (fechaActual.getTime() >= expiracion.getTime() || codigoColor === '3') {
+                    usuario.style.backgroundColor = '#FFEBCC'; // Fondo naranja claro FFEBCC
+                    // Obtener el correo electrónico del atributo de datos
+                    var email = usuario.dataset.email;
+                    // Llamar a la función de Python mediante AJAX
+                    eliminarAccesoBiblioteca(email);
+                }
+                // Invitacion enviada (usuario activo)
+                else if (codigoColor === '1') {
+                    usuario.style.backgroundColor = '#D2FFD2'; // Fondo verde claro
+                }
+                // invitacion denegada a mano
+                else if (codigoColor === '2') {
+                    usuario.style.backgroundColor = '#FFD2D2'; // Fondo rojo claro
+                }
+                //usuario modificado o recien creado
+                else if (codigoColor === '0') {
+                    usuario.style.backgroundColor = 'white';
+                }
+            });
+
+            function eliminarAccesoBiblioteca(email) {
+                // Crear una instancia de XMLHttpRequest
+                var xhr = new XMLHttpRequest();
+
+                // Especificar la URL y el método (puedes ajustar la URL según tu configuración)
+                var url = '/eliminar_acceso_biblioteca/' + email; // Ruta en tu servidor Flask
+                var method = 'POST';
+
+                // Configurar la solicitud
+                xhr.open(method, url, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                // Manejar el evento onload (cuando la solicitud se completa exitosamente)
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        console.log('Acceso a la biblioteca eliminado exitosamente');
+                    } else {
+                        console.error('Error al eliminar el acceso a la biblioteca');
+                    }
+                };
+
+                // Convertir el objeto JSON en una cadena y enviarlo en el cuerpo de la solicitud
+                var data = JSON.stringify({ email: email });
+                xhr.send(data);
+            }
+        });
+    </script>
+</head>
+<body>
+    {% include 'menu.html' %}
+    
+    <div class="content">
+        <h1>Lista de Usuarios Plex</h1>
+        <div class="table-container"> <!-- Envuelve la tabla en un contenedor -->
+            <table id="usuariosTable">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Contraseña</th>
+                        <th>Expiración</th>
+                        <th>Pantallas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr class="usuario-fila" data-codigocolor="{{ usuario.codigoColor }}" data-email="{{ usuario.email }}">
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.contrasena }}</td>
+                            <td class="expiracion">{{ usuario.expiracion }}</td>
+                            <td>{{ usuario.pantallas }}</td>
+                            <td class="actions">
+                                <form method="post" action="{{ url_for('eliminar_cuenta', email=usuario.email) }}">
+                                    <button type="submit">
+                                        <img src="{{ url_for('static', filename='eliminar.png') }}" alt="Eliminar" width="20" height="20">
+                                    </button>
+                                </form>
+                                <form method="get" action="{{ url_for('modificar_expiracion', email=usuario.email) }}">
+                                    <button type="submit">
+                                        <img src="{{ url_for('static', filename='modificar.png') }}" alt="Modificar Expiración" width="20" height="20">
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ url_for('conceder_acceso_biblioteca_route', email=usuario.email) }}">
+                                    <button type="submit">
+                                        <img src="{{ url_for('static', filename='invitar.png') }}" alt="Conceder acceso" width="20" height="20">
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ url_for('eliminar_acceso_biblioteca_route', email=usuario.email) }}">
+                                    <button type="submit">
+                                        <img src="{{ url_for('static', filename='denegar.png') }}" alt="Conceder acceso" width="20" height="20">
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash-message {{ category }}">
+                    <span class="close" onclick="this.parentElement.style.opacity='0'">&times;</span>
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
+        
+        <!-- <div class="filtro-container" style="width: 80%; margin: 20px auto;">
+            <label for="filtro_email">Filtrar por Email:</label>
+            <input type="text" id="filtro_email" oninput="filtrarPorEmail()">
+        </div> -->
+        
+    </div>  
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Lista de Servidores</title>
+  <style>
+     body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+    }
+
+    #serversContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .server-container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 10px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      position: relative;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .connectBtn,
+    #addServerBtn,
+    #goBackBtn {
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .connectBtn {
+      background-color: #007bff;
+    }
+
+    .connectBtnActive {
+      background-color: #28a745; /* Color verde para indicar conectado */
+      cursor: not-allowed; /* Cambia el cursor a 'no permitido' cuando está conectado */
+    }
+
+    #addServerBtn {
+      background-color: #28a745;
+    }
+
+    #goBackBtn {
+      background-color: #007bff;
+      /* Azul para el botón Volver Atrás */
+    }
+
+    .connectBtn:hover,
+    #goBackBtn:hover {
+      background-color: #17549f;
+      /* Cambia el color de fondo al hacer hover */
+    }
+    #addServerBtn:hover {
+      background-color: #0e7130;
+      /* Cambia el color de fondo al hacer hover */
+    }
+
+    .button-container {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      /* Centra los botones horizontalmente */
+    }
+
+    .actionBtn2 {
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      margin: 5px;
+      transition: transform 0.3s ease-in-out;
+      /* Borde redondeado para el botón */
+    }
+
+    .actionBtn2:hover {
+      transform: scale(1.2);
+      /* Cambia el tamaño al hacer hover */
+    }
+
+    .actionBtn2 img {
+      width: 100%;
+      height: 100%;
+      /* Ajusta la imagen para cubrir completamente el botón */
+    }
+
+    /* Estilos para los mensajes flash */
+    #flash-messages {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .flash-message {
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+      position: relative;
+    }
+
+    .error {
+      background-color: #dc3545;
+    }
+
+    .flash-message .close {
+      cursor: pointer;
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Lista de Servidores</h1>
+  </header>
+
+  <div id="serversContainer">
+    {% for server in user_servers %}
+      <div class="server-container">
+        <h2>{{ server.nombre_server }}</h2>
+        {% if server.activo == "1" %}
+            <form method="post" action="{{ url_for('conectar', nombre_servidor=server.nombre_server) }}">
+                <button class="connectBtn connectBtnActive">CONECTADO</button>
+            </form>
+        {% else %}
+            <form method="post" action="{{ url_for('conectar', nombre_servidor=server.nombre_server) }}">
+                <button class="connectBtn">conectar</button>
+            </form>
+        {% endif %}
+        
+        <div class="button-container2">
+            <form method="post" action="{{ url_for('modificar_servidor', nombre_servidor=server.nombre_server) }}">
+                <button class="actionBtn2">
+                    <img src="{{ url_for('static', filename='modificar.png') }}" alt="Modificar" >
+                </button>
+            </form>
+            <form method="post" action="{{ url_for('eliminar_servidor', nombre_servidor=server.nombre_server) }}">
+                <button class="actionBtn2" onclick="eliminarServidor('{{ server.nombre_server }}')">
+                    <img src="{{ url_for('static', filename='eliminar.png') }}" alt="Eliminar" >
+                </button>
+            </form>            
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="button-container">
+    <button id="goBackBtn">Volver Atrás</button>
+    <button id="addServerBtn">Añadir Servidor</button>
+  </div>
+
+  <div id="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            <span class="close" onclick="this.parentElement.style.opacity='0'">&times;</span>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <script>
+    document.getElementById('addServerBtn').addEventListener('click', () => {
+        window.location.href = '/nuevo_servidor';
+    });
+
+    document.getElementById('goBackBtn').addEventListener('click', () => {
+        window.location.href = '/index';  // Cambia esta ruta según la estructura de tu aplicación
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      var flashMessages = document.getElementById('flash-messages');
+      if (flashMessages) {
+        setTimeout(function () {
+          flashMessages.style.opacity = '0';
+        }, 5000); // Oculta después de 5 segundos
+      }
+    });
+    
+
+  </script>
+
+</body>
+</html>

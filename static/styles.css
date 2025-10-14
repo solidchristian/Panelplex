@@ -1,0 +1,121 @@
+/* Otros estilos... */
+
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    padding-top: 20px;
+    padding: 15px 15px 15px 32px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s;
+}
+
+.sidenav a {
+    padding: 15px 15px 15px 32px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .perfil {
+    width: 70%;
+    margin-bottom: 20px;
+}
+
+.sidenav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 18px;
+    color: #818181;
+    transition: 0.3s;
+    padding: 15px 15px 15px 32px;
+}
+
+.sidenav-link:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .perfil-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-right: 20%;
+}
+
+.sidenav p {
+    text-align: center;
+    margin: 0; /* Elimina márgenes predeterminados */
+}
+
+.logout-link {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    color: #3498db;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.3s;
+    padding: 10px 15px 15px 32px; 
+    margin-bottom: 10%;
+    text-align: center; 
+}
+
+.logout-link:hover {
+    color: #5dade2;
+}
+
+.sidenav .logout-icon {
+    width: 15%;
+    margin-bottom: 5px;
+    margin-right: 10%;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.5s;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 16px;}
+}
+
+body {
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+.sin-servidores {
+    border: 4px solid transparent;
+    border-radius: 50%;
+    animation: blink 1.5s infinite; /* Aplica la animación de parpadeo con una duración de 1.5 segundos y se repite infinitamente */
+}
+
+@keyframes blink {
+    0% { border-color: transparent; }
+    50% { border-color: #ff0000; }
+    100% { border-color: transparent; }
+}
+

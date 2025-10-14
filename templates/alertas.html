@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios Próximos a Expirar</title>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTable en tu tabla
+            $('#usuariosTable').DataTable();
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Elimina el margen predeterminado del body */
+            overflow: hidden; /* Evita el desplazamiento */
+        }
+        
+        h1 {
+            background: linear-gradient(to right, #ff8c00, #ff4d00);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 0;
+            font-family: 'Roboto', sans-serif;
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+
+        .table-container {
+            margin: 20px auto; /* Ajusta el margen y auto para centrar horizontalmente */
+            width: 80%; /* Establece el ancho de la tabla */
+            max-height: 600px; /* Ajusta la altura máxima según tus necesidades */
+            overflow-y: auto; /* Agrega un desplazamiento vertical si es necesario */
+        }
+        table {
+            margin-bottom: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            text-align: center; 
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            text-align: center; 
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        .content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, rgba(74, 74, 74, 0.4), rgba(255, 255, 255, 0.4));
+        }
+
+        button {
+            background-color: #ffffff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;  /* Espacio entre los botones */
+            justify-content: center; /* Centra los botones horizontalmente */
+        }
+        
+        .actions form {
+            margin: 5px;  /* Ajusta el espacio entre los formularios en todos los lados */
+        }
+
+        .actions button {
+            background-color: #ffffff;
+            color: white;
+            padding: 15px; /* Ajusta el tamaño del botón según sea necesario */
+            border: none;
+            border-radius: 8px; /* Ajusta el radio de borde para redondear los botones */
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #45a049;
+        }
+
+        .actions img {
+            width: 30px; /* Ajusta el tamaño de la imagen dentro del botón según sea necesario */
+            height: 30px;
+            margin-right: 5px; /* Ajusta el espacio entre la imagen y el texto del botón */
+        }
+
+        #flash-messages {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 300px;
+        text-align: center;
+        }
+
+        .flash-message {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        position: relative;
+        }
+
+        .error {
+        background-color: #dc3545;
+        }
+
+        .flash-message .close {
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        color: #fff;
+        }
+            
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var flashMessages = document.getElementById('flash-messages');
+        if (flashMessages) {
+            setTimeout(function () {
+            flashMessages.style.opacity = '0';
+            }, 5000); // Oculta después de 5 segundos
+        }
+        });
+    </script>
+</head>
+<body>
+
+    {% include 'menu.html' %}
+
+    <div class="content">
+        <h1>Usuarios Próximos a Expirar</h1>
+        <div class="table-container">
+            <table id="usuariosTable">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Expiración</th>
+                        <th>Pantallas</th>
+                        <th>Telegram</th>
+                        <th>Whatsapp</th>
+                        <th>Discord</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios_proximos %}
+                        <tr>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.expiracion }}</td>
+                            <td>{{ usuario.pantallas }}</td>
+                            <td>{{ usuario.telegram }}</td>
+                            <td>{{ usuario.whatsapp }}</td>
+                            <td>{{ usuario.discord }}</td>
+                            <td class="actions">
+                                <form method="post" action="{{ url_for('modificar_contacto', email=usuario.email) }}">
+                                    <button type="submit">
+                                        <img src="{{ url_for('static', filename='modificar.png') }}" alt="Modificar contacto" width="20" height="20">
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-message {{ category }}">
+                <span class="close" onclick="this.parentElement.style.opacity='0'">&times;</span>
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+
+</body>
+</html>

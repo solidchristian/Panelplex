@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Usuario</title>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+
+        h1, p {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        p {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: white;
+            background-color: #27ae60;  /* Color verde */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            display: block;
+            margin: 0 auto; /* Centra el botón */
+            display: block;
+        }
+
+        button:hover {
+            background-color: #219653;  /* Color verde oscuro al pasar el mouse */
+        }
+
+        .volver-btn {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .volver-btn a button {
+            background-color: #3498db;  /* Color azul para el botón de volver */
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px; /* Espacio entre los botones */
+            display: inline-block;
+        }
+
+        .volver-btn a button:hover {
+            background-color: #2980b9;  /* Color azul oscuro al pasar el mouse */
+        }
+
+        /* Modificado el estilo en línea para el mensaje de flash */
+        .flash-messages {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .flash-messages p {
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <!-- Modificado el estilo en línea para el mensaje de flash -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <form method="post" action="{{ url_for('procesar_modificacion', email=email) }}">
+        <h1>Modificar Usuario</h1>
+        <p>Email: {{ email }}</p>
+
+        <label for="numero_pantallas">Número de Pantallas:</label>
+        <input type="number" name="numero_pantallas" value="{{ usuario['pantallas'] if 'pantallas' in usuario else '' }}" required>
+        
+        <label for="expiracion">Expiración (meses):</label>
+        <select name="expiracion">
+            <option value="" selected disabled>Seleccionar expiración</option>
+            <option value="1">1 mes</option>
+            <option value="3">3 meses</option>
+            <option value="6">6 meses</option>
+            <option value="12">12 meses</option>
+        </select>
+
+        <label for="whatsapp">WhatsApp:</label>
+        <input type="text" name="whatsapp" placeholder="Ingrese el número de WhatsApp del usuario">
+
+        <label for="telegram">Telegram:</label>
+        <input type="text" name="telegram" placeholder="Ingrese el nombre de usuario de Telegram">
+
+        <label for="discord">Discord:</label>
+        <input type="text" name="discord" placeholder="Ingrese el nombre de usuario de Discord">
+        
+        <button type="submit">Guardar Cambios</button>
+
+        <div class="volver-btn">
+            <a href="{{ url_for('lista_usuarios') }}"><button type="button">Volver a la Lista de Usuarios</button></a>
+        </div>
+    </form>
+
+    
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!-- templates/nuevo_servidor.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Añadir Nuevo Servidor</title>
+  <style>
+    /* Agrega estilos según tus preferencias */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 20px auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .azul {
+      background-color: #2876dc;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .azul:hover{
+      background-color: #285cb4;
+    }
+
+    .info-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-color: #3498db;
+      color: #fff;
+      text-align: center;
+      border-radius: 50%;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.729);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: left;
+      max-width: 400px; /* Ajusta el tamaño máximo según tus preferencias */
+      width: 100%; /* Ajusta el ancho al 100% */
+    }
+
+    .close {
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Añadir Nuevo Servidor</h1>
+  <form id="addServerForm">
+    <label for="nombre_server">Nombre Servidor:</label>
+    <input type="text" id="nombre_server" name="nombre_server" required>
+
+    <label for="urlPlex">URL de Plex:<span class="info-icon" onclick="toggleModal('infoPlex')">i</span></label>
+    <input type="text" id="urlPlex" name="urlPlex" required placeholder="Ej: http://tu-servidor-plex.com // http://IPpublica:32400">
+
+    <label for="tokenPlex">Token de Plex:<span class="info-icon" onclick="toggleModal('infoTokenPlex')">i</span></label>
+    <input type="text" id="tokenPlex" name="tokenPlex" required>
+
+
+    <label for="urlTautulli">URL de Tautulli:<span class="info-icon" onclick="toggleModal('infoUrlTautulli')">i</span></label>
+    <input type="text" id="urlTautulli" name="urlTautulli" required placeholder="Ej: http://tu-servidor-tautulli.com // http://IPpublica:puerto" >
+
+    <label for="tokenTautulli">Token de Tautulli:<span class="info-icon" onclick="toggleModal('infoTokenTautulli')">i</span></label>
+    <input type="text" id="tokenTautulli" name="tokenTautulli" required>
+        
+    <button type="button" onclick="agregarServidor()">Añadir Servidor</button>
+    <button type="button" class="azul" onclick="volverAtras()">volver</button>
+
+    <div class="modal" id="infoPlex" onclick="toggleModal('infoPlex')">
+        <div class="modal-content" onclick="toggleModal('infoPlex')">
+          <span class="close" onclick="toggleModal('infoPlex')">&times;</span>
+          <span onclick="toggleModal('infoPlex')">Esta es la URL de tu servidor PLEX </br></br><strong>Ejemplo:</strong></br> Con dominio: http://tu-servidor-plex.com /</br>Sin dominio: http://IPpublica:32400</span>
+        </div>
+    </div>
+    <div class="modal" id="infoTokenPlex" onclick="toggleModal('infoTokenPlex')">
+        <div class="modal-content" onclick="toggleModal('infoTokenPlex')">
+          <span class="close" onclick="toggleModal('infoTokenPlex')">&times;</span>
+          <span onclick="toggleModal('infoTokenPlex')">Para obtener el token vamos a nuestro servidor PLEX,</br> damos a los 3 puntos que sale en la caratula de cualquier PELICULA,</br>elegimos "obtener informacion" y en la nueva ventana emergente</br>damos a ver XML y en la URL encontramos el token tal que asi: </br></br><strong>X-Plex-Token=</strong>t7nxxxxxxxxxs49</span>
+        </div>
+    </div>
+    <div class="modal" id="infoUrlTautulli" onclick="toggleModal('infoUrlTautulli')">
+        <div class="modal-content" onclick="toggleModal('infoUrlTautulli')">
+          <span class="close" onclick="toggleModal('infoUrlTautulli')">&times;</span>
+          <span onclick="toggleModal('infoUrlTautulli')">Esta es la URL de tu app Tautulli </br></br><strong>Ejemplo:</strong></br> Con dominio: http://tu-app-tautulli.com /</br>Sin dominio: http://IPpublica:puertoTautulli</span>
+        </div>
+    </div>
+    <div class="modal" id="infoTokenTautulli" onclick="toggleModal('infoTokenTautulli')">
+        <div class="modal-content" onclick="toggleModal('infoTokenTautulli')">
+          <span class="close" onclick="toggleModal('infoTokenTautulli')">&times;</span>
+          <span onclick="toggleModal('infoTokenTautulli')">Accedes a tu app Tautulli</br> nos vamos a settigns > web interface</br> y aqui encontraremos el token en el campo <strong>API key</strong> </br></br>IMPORTANTE: Activar la casilla "Enable API" y tener bien confitgurado tautulli apuntando a nuestro servidor PLEX</span>
+        </div>
+    </div>
+  </form>
+
+  <script>
+    function volverAtras() {
+      window.location.href = '/lista_servidores';
+    }
+    function agregarServidor() {
+      var form = document.getElementById('addServerForm');
+      var formData = new FormData(form);
+
+      // Envía los datos del formulario al servidor (puedes usar AJAX o cualquier otro método)
+      fetch('/agregar_servidor', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+            window.location.href = '/lista_servidores';
+        } else {
+          alert('Error al agregar el servidor');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+    function toggleModal(elementId) {
+      var modal = document.getElementById(elementId);
+      modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+    }
+  </script>
+
+</body>
+</html>

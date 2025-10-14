@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Servidor: {{ servidor.nombre_server }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .azul {
+        background-color: #2876dc;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        }
+
+        .azul:hover{
+        background-color: #285cb4;
+        }
+    </style>
+    <script>
+        function volverAtras() {
+            window.location.href = '/lista_servidores';
+        }
+    </script>
+</head>
+
+<body>
+    
+    <form method="post" action="{{ url_for('guardar_servidor', nombre_servidor=servidor.nombre_server) }}">
+        <h1>Modificar Servidor: {{ servidor.nombre_server }}</h1>
+        <label for="urlPlex">Nombre server:</label>
+        <input type="text" id="nombre_server" name="nombre_server" value="{{ servidor.nombre_server }}">
+
+        <label for="urlPlex">URL Plex:</label>
+        <input type="text" name="urlPlex" value="{{ servidor.urlPlex }}" required>
+
+        <label for="tokenPlex">Token Plex:</label>
+        <input type="text" name="tokenPlex" value="{{ servidor.apiPlex }}" required>
+
+        <label for="urlTautulli">URL Tautulli:</label>
+        <input type="text" name="urlTautulli" value="{{ servidor.urlTautulli }}" required>
+
+        <label for="tokenTautulli">Token Tautulli:</label>
+        <input type="text" name="tokenTautulli" value="{{ servidor.apiTautulli }}" required>
+
+        <button type="submit">Guardar Cambios</button>
+        <button type="button" class="azul" onclick="volverAtras()">volver</button>
+    </form>
+</body>
+
+</html>

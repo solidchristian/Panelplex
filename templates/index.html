@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Plex</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            background: linear-gradient(to right, #ff8c00, #ff4d00);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 0;
+            font-family: 'Roboto', sans-serif;
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+        .form-container h1 {
+            margin-bottom: 20px; /* Ajusta el margen según sea necesario */
+        }
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px; /* Espacio entre los botones */
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a button {
+            background-color: #333;
+        }
+        a button:hover {
+            background-color: #555;
+        }
+        form {
+            margin-top: 20px;
+            width: 100%; /* Ajusta el ancho del formulario al 100% de su contenedor */
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input {
+            width: 65%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            
+        }
+
+        .form-container {
+            width: 80%;
+            margin: 0 auto;
+            margin-bottom: 20px; /* Agrega margen inferior para separar los formularios */
+            
+        }
+
+        h1:first-child {
+            margin-bottom: 20px; /* Agrega margen inferior para separar los títulos */
+        }
+        /* Estilos para los mensajes flash */
+        #flash-messages {
+            position: fixed;
+            top: 50%;
+            right: 50%;
+            z-index: 1000;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .flash-message {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .error {
+            background-color: #dc3545;
+        }
+
+        .flash-message .close {
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            color: #fff;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var flashMessages = document.getElementById('flash-messages');
+            if (flashMessages) {
+                setTimeout(function () {
+                flashMessages.style.opacity = '0';
+                }, 5000); // Oculta después de 5 segundos
+            }
+        });
+    </script>
+</head>
+<body>
+    {% include 'menu.html' %}
+
+    <div class="content">        
+        <div class="form-container">
+            <h1>Creacion de cuenta PLEX</h1>
+            <form action="{{ url_for('crear_cuenta') }}" method="post">
+                <label for="username">Email de usuario:</label>
+                <input type="text" id="username" name="username" required placeholder="Ej: usuario@dominio.com">
+        
+                <label for="pantallas">Pantallas compartidas:</label>
+                <input type="number" id="pantallas" name="pantallas" required>
+        
+                <label for="duration">Duración (en días):</label>
+                <select id="duration" name="duration" required style="width: 200px; padding: 8px; margin-bottom: 16px;">
+                    <option value="1">1 mes</option>
+                    <option value="2">2 meses</option>
+                    <option value="3">3 meses</option>
+                    <option value="4">4 meses</option>
+                    <option value="5">5 meses</option>
+                    <option value="6">6 meses</option>
+                    <option value="7">7 meses</option>
+                    <option value="8">8 meses</option>
+                    <option value="9">9 meses</option>
+                    <option value="10">10 meses</option>
+                    <option value="11">11 meses</option>
+                    <option value="12">12 meses</option>
+                </select>
+        
+                <div>
+                    <button type="submit">Crear cuenta</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="form-container">
+            <h1>Creacion de cuenta DEMO</h1>
+            <!-- Nuevo bloque para "Generar demo" -->
+            <form action="{{ url_for('generar_demo') }}" method="post">
+                <label for="demo_username">Nombre de usuario para demo:</label>
+                <input type="text" id="demo_username" name="demo_username" required placeholder="Ej: usuario@demo.com">
+                <div>
+                    <button type="submit">Generar demo</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash-message {{ category }}">
+                    <span class="close" onclick="this.parentElement.style.opacity='0'">&times;</span>
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
+    </div>
+</body>
+</html>

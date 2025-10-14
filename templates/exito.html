@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éxito</title>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('{{ url_for("static", filename="exito.png") }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        p {
+            color: #27ae60;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Opacidad del fondo */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7); /* Ajusta el valor de la opacidad según tus preferencias */
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Invitación enviada!!</h1>
+    <p>Acceso concedido correctamente a <strong>{{ email }}</strong></p>
+    <a href="{{ url_for('lista_usuarios') }}"><button>Volver a la lista de usuarios</button></a>
+</body>
+
+</html>

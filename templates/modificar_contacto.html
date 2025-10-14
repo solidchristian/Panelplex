@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Modificar Contacto</title>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inactividad.js') }}"></script>
+    <!-- Agrega aquí enlaces a tus estilos si es necesario -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 20px;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin-top: 0; /* Evita el espacio extra en la parte superior del h1 */
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            text-align: center; /* Centra el texto del label */
+        }
+
+        input {
+            width: 60%; /* Ancho de los inputs */
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            display: block;
+            margin: 0 auto; /* Centra los labels e inputs */
+        }
+
+        .botones {
+            text-align: center; /* Alinea los botones al centro dentro del formulario */
+            margin-top: 10px; /* Espacio entre los campos de entrada y los botones */
+        }
+
+        button {
+            padding: 6px 10px; /* Ajusta el padding para hacer los botones más compactos */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 40%; /* Ancho reducido */
+            margin-top: 10px;
+            margin-right: 5px; /* Espacio entre los botones */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a button {
+            background-color: #333;
+        }
+
+        a button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Modificar Contacto</h1>
+    <form method="post" action="{{ url_for('guardar_modificacion_contacto', email=email) }}">
+        <label for="telegram">Telegram:</label>
+        <input type="text" id="telegram" name="telegram" >
+
+        <label for="whatsapp">WhatsApp:</label>
+        <input type="text" id="whatsapp" name="whatsapp"  >
+
+        <label for="discord">Discord:</label>
+        <input type="text" id="discord" name="discord" >
+
+        <div class="botones">
+            <button type="submit">Guardar Cambios</button>
+            <a href="{{ url_for('usuarios_proximos_expirar') }}"><button type="button">Volver atrás</button></a>
+        </div>
+    </form>
+
+</body>
+</html>

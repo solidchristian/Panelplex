@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<div class="sidenav">
+    <a href="{{ url_for('lista_servidores') }}">
+        <div class="perfil-container">
+            <img class="perfil{% if not servidores %} sin-servidores{% endif %}" src="{{ url_for('static', filename='sinusu.png') }}" alt="Configuración Personal">
+            <p>{{ current_user }}</p>
+        </div>
+    </a>
+    
+    {% if servidores %}
+        <a href="{{ url_for('index') }}">Crear Usuario</a>
+        <a href="{{ url_for('lista_usuarios') }}">Lista de Usuarios</a>
+        <a href="{{ url_for('usuarios_proximos_expirar') }}">Usuarios Próximos a Expirar</a>
+        <a href="{{ url_for('lista_biblioteca') }}">Bibliotecas</a>
+    {% else %}
+        <!-- Puedes agregar un mensaje o simplemente deshabilitar los enlaces -->
+        <p>No tienes servidores añadidos.</p>
+    {% endif %}
+    <a href="{{ url_for('logout') }}" class="logout-link">
+        <img class="logout-icon" src="{{ url_for('static', filename='cerrar.png') }}" alt="Icono de logout">
+    </a>
+    <div id="menuAdmin" style="display: none;">
+        <!-- Contenido del menú de administrador -->
+        <h2>Menú de Administrador</h2>
+        <p>Ingresa la contraseña:</p>
+        <input type="password" id="contrasenaAdmin">
+        <button onclick="verificarContrasena()">Entrar</button>
+    </div>
+</div>
+
+
+
+<script>
+   var menuVisible = false;
+
+    // Agrega un evento de teclado para detectar la combinación de teclas
+    document.addEventListener('keydown', function(event) {
+        // Combina Ctrl + Alt + Shift + A para alternar la visibilidad del menú
+        if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'A') {
+            if (menuVisible) {
+                ocultarMenu();
+            } else {
+                mostrarMenu();
+            }
+            // Invierte el estado de visibilidad del menú
+            menuVisible = !menuVisible;
+        }
+    });
+    function ocultarMenu() {
+        var menuAdmin = document.getElementById('menuAdmin');
+        menuAdmin.style.display = 'none';
+    }
+
+    function verificarContrasena() {
+        var contrasenaAdmin = document.getElementById('contrasenaAdmin').value;
+
+        // Verificar la contraseña (puedes compararla con un valor fijo o almacenado)
+        if (contrasenaAdmin === 'panelPlex') {
+            // Contraseña correcta, puedes realizar acciones de administrador aquí
+            console.log('Contraseña correcta');
+            // Por ejemplo, puedes redirigir a una página de configuración de administrador
+            window.location.href = '/admin';
+        } else {
+            // Contraseña incorrecta, puedes mostrar un mensaje o realizar otras acciones
+            console.log('Contraseña incorrecta');
+        }
+
+        // Ocultar el menú después de verificar la contraseña
+        ocultarMenu();
+    }
+
+    function mostrarMenu() {
+        var menuAdmin = document.getElementById('menuAdmin');
+        menuAdmin.style.display = 'block';
+    }
+</script>

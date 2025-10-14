@@ -1,0 +1,38 @@
+{
+    "login": [
+        {
+            "session": [
+                {
+                    "Quicho": "1234"
+                }
+            ],
+            "servidores": [
+                {
+                    "nombre_server": "stream",
+                    "activo": "1",
+                    "urlPlex": "sgfhgfdf",
+                    "apiPlex": "dsfsdfds",
+                    "urlTautulli": "sdfsd",
+                    "apiTautulli": "dsf",
+                    "usuarios": []
+                }
+            ]
+        },
+        {
+            "session": [
+                {
+                    "test": "2223"
+                }
+            ],
+            "servidores": []
+        },
+        {
+            "session": [
+                {
+                    "nuevo": "1234"
+                }
+            ],
+            "servidores": []
+        }
+    ]
+}
